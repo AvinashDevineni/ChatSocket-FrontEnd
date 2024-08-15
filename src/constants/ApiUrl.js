@@ -1,0 +1,1 @@
+export const API_URL_NO_PROTOCOL = 'localhost:4000';
