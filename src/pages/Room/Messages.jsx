@@ -1,13 +1,19 @@
-import './Messages.css'
+import './Messages.css';
 
-export default function Messages({ messages, msgFromToStyle }) {
+export default function Messages({ messages, msgFromToWrapperStyle, msgFromToMsgStyle }) {
     return (
         <>
-            <ul>
+            <div id='messages-list'>
                 {messages.map((msgData, i) => {
-                    return <p style={msgFromToStyle(msgData.from)} key={i}>{msgData.message}</p>;
+                    return (
+                        <div className='message-wrapper' style={msgFromToWrapperStyle(msgData.from, msgData.message)}>
+                            <p key={i} className='message' style={msgFromToMsgStyle(msgData.from, msgData.message)}>
+                                {msgData.message}
+                            </p>
+                        </div>
+                    );
                 })}
-            </ul>
+            </div>
         </>
     );
 };

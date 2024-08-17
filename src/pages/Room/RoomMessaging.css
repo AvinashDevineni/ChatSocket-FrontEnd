@@ -1,0 +1,24 @@
+#room-messaging-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#room-name {
+    margin-bottom: 20px;
+    font-size: 2.1em;
+
+    text-align: center;
+}
+
+#msg-input {
+    width: min(80%, 300px);
+    height: 50px;
+
+    margin-bottom: 10px;
+}
+
+#send-msg {
+    margin-bottom: 20px;
+    font-size: 1.4em;
+}
