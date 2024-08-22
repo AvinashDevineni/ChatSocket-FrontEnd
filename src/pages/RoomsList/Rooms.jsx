@@ -90,9 +90,13 @@ export default function Rooms() {
                 const abortController = new AbortController();
                 abortControllers.current.push(abortController);
                 const signal = abortController.signal;
-
-                fetch(`http://${API_URL_NO_PROTOCOL}/room/${roomName}`, {method: 'POST', signal})
-                .then(abortControllers.current.splice(curIdx, 1))
+                                
+                fetch(`http://${API_URL_NO_PROTOCOL}/room`, {
+                    method: 'POST', body: JSON.stringify({ roomName: roomName }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }, signal
+                }).then(abortControllers.current.splice(curIdx, 1))
                 .catch(e => alert(`Error: ${e}`));
                 }}/>
 
