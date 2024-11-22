@@ -1,14 +1,22 @@
-#room-messaging-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#back-arrow {
+    position: absolute;
+    left: 7vw;
 }
 
 #room-name {
+    margin: 0px;
     margin-bottom: 20px;
     font-size: 2.1em;
 
     text-align: center;
+}
+
+#room-messaging {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: 20px;
 }
 
 #msg-input {

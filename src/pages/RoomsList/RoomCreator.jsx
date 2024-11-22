@@ -3,7 +3,7 @@ import { useRef } from "react";
 import './RoomCreator.css';
 
 export default function RoomCreator({ onRoomCreate }) {
-    const textAreaRef = useRef();
+    const roomNameInputRef = useRef();
 
     function invokeIfNotNull(func, arg) {
         if (!func)
@@ -14,8 +14,12 @@ export default function RoomCreator({ onRoomCreate }) {
     return (
         <>
             <div id='creator-wrapper'>
-                <textarea ref={textAreaRef} id='room-name-input'></textarea>
-                <button onClick={() => invokeIfNotNull(onRoomCreate, textAreaRef.current.value)}>Create Room</button>
+                <input type='text' ref={roomNameInputRef} id='room-name-input'/>
+                <button onClick={() => {
+                    invokeIfNotNull(onRoomCreate, roomNameInputRef.current.value);
+                 }}>
+                    Create Room
+                </button>
             </div>
         </>
     );

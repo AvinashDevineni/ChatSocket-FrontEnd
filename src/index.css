@@ -1,26 +1,32 @@
+* {
+    font-family: 'Noto Sans JP';
+}
+
 body {
     background-color: hsl(0, 0%, 7%);
-
     color: white;
-    font-family: 'Noto Sans JP';
 }
 
 button {
     cursor: pointer;
 
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
 
     color: white;
     font-size: 1.3em;
-    padding: 5px 12px;
+    padding: 5px 20px;
 
-    background: linear-gradient(to bottom right, hsl(166, 30%, 42%), hsl(166, 36%, 52%));
+    background: linear-gradient(to bottom right, hsl(166, 28%, 41%), hsl(166, 39%, 54%));
 
-    transition: all 0.25s;
+    transition: transform 0.25s;
 }
 
-textarea {
+button:hover {
+    transform: scale(1.1);
+}
+
+textarea, input[type="text"] {
     resize: none;
 
     border: none;
@@ -28,8 +34,4 @@ textarea {
 
     background-color: hsl(0, 0%, 25%);
     color: white;
-}
-
-button:hover {
-    transform: scale(1.1);
 }
