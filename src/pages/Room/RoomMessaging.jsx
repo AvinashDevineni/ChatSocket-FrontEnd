@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import Messages from './Messages.jsx';
@@ -8,10 +9,10 @@ import { API_URL_NO_PROTOCOL } from '../../constants/ApiUrl.js';
 
 import BackArrow from '../../public/back-arrow.svg';
 import './RoomMessaging.css';
-import { Link } from 'react-router-dom';
 
 export default function RoomMessaging() {
-    const { name } = useParams();
+    const { name: roomUri } = useParams();
+    const [roomName, setRoomName] = useState('Loading...');
     const [messages, setMessages] = useState([]);
     const textAreaRef = useRef();
     const ws = useRef();
@@ -24,18 +25,22 @@ export default function RoomMessaging() {
             }));
         };
 
-        ws.current = new WebSocket(`ws://${API_URL_NO_PROTOCOL}/room/${name}`);
+        ws.current = new WebSocket(`ws://${API_URL_NO_PROTOCOL}/room/${encodeURI(roomUri)}`);
         ws.current.addEventListener('message', updateMessages);
+        
+        const controller = new AbortController();
+        const signal = controller.signal;
+        fetch(`http://${API_URL_NO_PROTOCOL}/room/${encodeURI(roomUri)}`, {signal})
+        .then(res => res.json()).then(res => setRoomName(res.name));
         
         return () => {
             ws.current.removeEventListener('message', updateMessages);
             ws.current.close();
+            ws.current = null;
+
+            controller.abort();
         };
     }, []);
-
-    useEffect(() => {
-        console.log(messages);
-    }, [messages]);
 
     return (
         <>
@@ -45,7 +50,7 @@ export default function RoomMessaging() {
                 <Link to='/'>
                     <img id='back-arrow' src={BackArrow} width={50} height={50}/>
                 </Link>
-                <h1 id="room-name">{name}</h1>
+                <h1 id="room-name">{roomName}</h1>
             </div>
             
             <Messages messages={messages} msgInfoToWrapperStyle={from => {

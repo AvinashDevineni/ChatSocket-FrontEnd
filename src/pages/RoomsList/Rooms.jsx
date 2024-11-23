@@ -22,7 +22,7 @@ export default function Rooms() {
         return <Room key={roomInfo.name} name={roomInfo.name} numPeople={roomInfo.numPeople}
                 onClick={() => {
                     ws.current.close();
-                    navigate(roomInfo.path);
+                    navigate(`/room/${roomInfo.uri}`);
                 }}/>;
     }
 
