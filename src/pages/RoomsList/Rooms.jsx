@@ -13,10 +13,8 @@ export default function Rooms() {
     const [rooms, setRooms] = useState([]);
     const roomNameToInfoDict = useRef({});
 
-    const abortControllers = useRef([]);
+    const createRoomController = useRef(new AbortController());
     const ws = useRef();
-
-    console.log(roomNameToInfoDict.current);
     
     function makeRoomFromInfo(roomInfo) {
         return <Room key={roomInfo.name} name={roomInfo.name} numPeople={roomInfo.numPeople}
@@ -27,78 +25,72 @@ export default function Rooms() {
     }
 
     useEffect(() => {
-        const curIdx = abortControllers.current.length;
-        const abortController = new AbortController();
-        abortControllers.current.push(abortController);
-        const signal = abortController.signal;
+        const controller = new AbortController();
+        const signal = controller.signal;
 
+        // getting rooms
         fetch(`http://${API_URL_NO_PROTOCOL}/room`, {signal})
         .then(res => res.json()).then(roomInfo => {
             setRooms(roomInfo.rooms.map(roomInfo => makeRoomFromInfo(roomInfo)));
             for (let i = 0; i < roomInfo.rooms.length; i++)
-                roomNameToInfoDict.current[roomInfo.rooms[i].name] = { ...roomInfo.rooms[i], idx: i };
-            console.log(roomNameToInfoDict.current);
-            
-            abortControllers.current.splice(curIdx, 1);
+                roomNameToInfoDict.current[roomInfo.rooms[i].name] = { ...roomInfo.rooms[i], idx: i };            
         }).catch(e => console.error(e));
 
-        const addToRooms = msg => {
+        // creates & updates room UIs
+        const handleRoomsUpdate = msg => {
             msg.data.text().then(msgString => {
                 const wss = JSON.parse(msgString);
-                console.log(wss);
+                // updating room if it already exists
+                if (wss.name in roomNameToInfoDict.current) {
+                    roomNameToInfoDict.current[wss.name].numPeople = wss.numPeople;
 
-                if (!(wss.name in roomNameToInfoDict.current)) {
+                    setRooms(rooms => rooms.map((room, i) => {
+                        if (i == roomNameToInfoDict.current[wss.name].idx)
+                            return makeRoomFromInfo(roomNameToInfoDict.current[wss.name]);
+                        return room;
+                    }));
+                }
+
+                // adding room if it doesn't exist
+                else {
                     setRooms(rooms => {
                         roomNameToInfoDict.current[wss.name] = { ...wss, idx: rooms.length };
                         return rooms.concat(makeRoomFromInfo(wss));
                     });
                 }
-
-                else {
-                    roomNameToInfoDict.current[wss.name].numPeople = wss.numPeople;
-
-                    setRooms(rooms => rooms.map((room, i) => {
-                        if (i === roomNameToInfoDict.current[wss.name].idx) {
-                            console.log('Found same idx');
-                            return makeRoomFromInfo(roomNameToInfoDict.current[wss.name]);
-                        }
-
-                        else {
-                            console.log('Did not find same idx');
-                            return room;
-                        }
-                    }));
-                }
             });
         };
         
         ws.current = new WebSocket(`ws://${API_URL_NO_PROTOCOL}`);
-        ws.current.addEventListener('message', addToRooms);
+        ws.current.addEventListener('message', handleRoomsUpdate);
 
         return () => {
-            ws.current.removeEventListener('message', addToRooms);
+            ws.current.removeEventListener('message', handleRoomsUpdate);
             ws.current.close();
 
-            abortControllers.current.forEach(abortController => abortController.abort());
+            controller.abort();
+            createRoomController.current.abort();
         };
     }, []);
     
     return (
         <>
             <RoomCreator onRoomCreate={roomName => {
-                const curIdx = abortControllers.current.length;
-                const abortController = new AbortController();
-                abortControllers.current.push(abortController);
-                const signal = abortController.signal;
+                createRoomController.current.abort();
+                createRoomController.current = new AbortController();
+                const signal = createRoomController.current.signal;
                                 
                 fetch(`http://${API_URL_NO_PROTOCOL}/room`, {
                     method: 'POST', body: JSON.stringify({ roomName: roomName }),
                     headers: {
                         "Content-Type": "application/json"
                     }, signal
-                }).then(abortControllers.current.splice(curIdx, 1))
-                .catch(e => alert(`Error: ${e}`));
-                }}/>
+                }).then(res => res.json()).then(res => {
+                    if (res.code === 'ROOM_DUPE')
+                        alert('The room already exists!');
+                })
+                .catch(e => console.log(e));
+             }}/>
 
             <ul id="rooms-list">{rooms}</ul>
         </>
