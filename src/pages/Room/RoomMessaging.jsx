@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 
 import Messages from './Messages.jsx';
 
@@ -19,10 +19,7 @@ export default function RoomMessaging() {
 
     useEffect(() => {
         const updateMessages = msg => {
-            msg.data.text().then(msgData => setMessages(msgs => {
-                console.log(msgs);
-                return msgs.concat(JSON.parse(msgData));
-            }));
+            msg.data.text().then(msgData => setMessages(msgs => msgs.concat(JSON.parse(msgData))));
         };
 
         ws.current = new WebSocket(`ws://${API_URL_NO_PROTOCOL}/room/${encodeURI(roomUri)}`);
@@ -44,47 +41,49 @@ export default function RoomMessaging() {
 
     return (
         <>
-            <Helmet><title>ChatSocket Room</title></Helmet>
-            
-            <div id='room-messaging-top'>
-                <Link to='/'>
-                    <img id='back-arrow' src={BackArrow} width={50} height={50}/>
-                </Link>
-                <h1 id="room-name">{roomName}</h1>
-            </div>
-            
-            <Messages messages={messages} msgInfoToWrapperStyle={from => {
-                if (from === 'user')
-                    return { backgroundColor: 'black', color: 'white', width: 'fit-content', maxWidth: 'max(50%, 250px)', alignSelf: 'flex-start' };
-                else if (from === 'server')
-                    return { backgroundColor: 'gray', width: '95%', borderRadius: '10px', textAlign: 'center' };
-                else throw new Error(`Unknown from (${from}) was given.`);
-             }}
-             msgInfoToMsgStyle={(from, msg) => {
-                if (from === 'server')
-                    return { margin: '5px 0px' };
+            <HelmetProvider>
+                <Helmet><title>ChatSocket Room</title></Helmet>
+                
+                <div id='room-messaging-top'>
+                    <Link to='/'>
+                        <img id='back-arrow' src={BackArrow} width={50} height={50}/>
+                    </Link>
+                    <h1 id="room-name">{roomName}</h1>
+                </div>
+                
+                <Messages messages={messages} msgInfoToWrapperStyle={from => {
+                    if (from === 'user')
+                        return { backgroundColor: 'black', color: 'white', width: 'fit-content', maxWidth: 'max(50%, 250px)', alignSelf: 'flex-start' };
+                    else if (from === 'server')
+                        return { backgroundColor: 'gray', width: '95%', borderRadius: '10px', textAlign: 'center' };
+                    else throw new Error(`Unknown from (${from}) was given.`);
+                 }}
+                 msgInfoToMsgStyle={(from, msg) => {
+                    if (from === 'server')
+                        return { margin: '5px 0px' };
 
-                else if (from === 'user') {
-                    const userMsgStyles = {};
-                    if (msg.length > 100)
-                        userMsgStyles['margin'] = '30px 30px';
-                    return userMsgStyles;
-                }
-                    
-                else throw new Error(`Unknown from (${from}) was given.`);
-             }}/>
+                    else if (from === 'user') {
+                        const userMsgStyles = {};
+                        if (msg.length > 100)
+                            userMsgStyles['margin'] = '30px 30px';
+                        return userMsgStyles;
+                    }
+                        
+                    else throw new Error(`Unknown from (${from}) was given.`);
+                 }}/>
 
-            <div id='room-messaging'>
-                <textarea ref={textAreaRef} id="msg-input"/>
-                <button id="send-msg" onClick={() => {
-                    ws.current.send(JSON.stringify({ 
-                        from: 'user', message: textAreaRef.current.value
-                    }));
-                    textAreaRef.current.value = '';
-                }}>
-                    Send
-                </button>
-            </div>
+                <div id='room-messaging'>
+                    <textarea ref={textAreaRef} id="msg-input"/>
+                    <button id="send-msg" onClick={() => {
+                        ws.current.send(JSON.stringify({ 
+                            from: 'user', message: textAreaRef.current.value
+                        }));
+                        textAreaRef.current.value = '';
+                     }}>
+                        Send
+                    </button>
+                </div>
+            </HelmetProvider>
         </>
     );
 };

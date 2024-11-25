@@ -14,6 +14,7 @@ export default function Rooms() {
     const roomNameToInfoDict = useRef({});
 
     const createRoomController = useRef(new AbortController());
+    // initializing ws in useRef func doesn't work
     const ws = useRef();
     
     function makeRoomFromInfo(roomInfo) {

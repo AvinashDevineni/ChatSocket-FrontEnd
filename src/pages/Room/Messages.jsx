@@ -6,8 +6,9 @@ export default function Messages({ messages, msgInfoToWrapperStyle, msgInfoToMsg
             <div id='messages-list'>
                 {messages.map((msgData, i) => {
                     return (
-                        <div className='message-wrapper' style={msgInfoToWrapperStyle(msgData.from, msgData.message)}>
-                            <p key={i} className='message' style={msgInfoToMsgStyle(msgData.from, msgData.message)}>
+                        <div key={i} className='message-wrapper'
+                         style={msgInfoToWrapperStyle(msgData.from, msgData.message)}>
+                            <p className='message' style={msgInfoToMsgStyle(msgData.from, msgData.message)}>
                                 {msgData.message}
                             </p>
                         </div>
