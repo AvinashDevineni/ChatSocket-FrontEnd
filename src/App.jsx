@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import Rooms from './pages/RoomsList/Rooms.jsx';
-import RoomMessaging from './pages/Room/RoomMessaging.jsx';
-import RoomNotFound from './pages/Room/RoomNotFound.jsx';
+import Rooms from './pages/index/Rooms.jsx';
+import RoomMessaging from './pages/room/RoomMessaging.jsx';
+import RoomNotFound from './pages/room/RoomNotFound.jsx';
 
 import './App.css';
 

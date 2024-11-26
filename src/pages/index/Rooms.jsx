@@ -17,7 +17,7 @@ export default function Rooms() {
     const ws = useRef();
     
     function makeRoomFromInfo(roomInfo) {
-        return <Room name={roomInfo.name}
+        return <Room name={roomInfo.name} creationTime={new Date(roomInfo.creationDate)}
                 numPeople={roomInfo.numPeople} link={`/room/${roomInfo.uri}`}
                 onClick={() => ws.current.close()}/>;
     }

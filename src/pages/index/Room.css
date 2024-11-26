@@ -13,3 +13,15 @@
     background-color: hsl(0, 0%, 20%);
     transform: scale(1.1);
 }
+
+.room > *:last-child {
+    margin-bottom: 10px;
+}
+
+.room > * {
+    margin: 0px;
+}
+
+.room-name {
+    margin-bottom: 20px;
+}
