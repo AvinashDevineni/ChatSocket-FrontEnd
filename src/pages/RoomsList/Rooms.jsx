@@ -14,15 +14,14 @@ export default function Rooms() {
     const roomNameToInfoDict = useRef({});
 
     const createRoomController = useRef(new AbortController());
-    // initializing ws in useRef func doesn't work
+    // initializing ws in useRef func doesn't
+    //work, so keeping it undefined for now
     const ws = useRef();
     
     function makeRoomFromInfo(roomInfo) {
-        return <Room key={roomInfo.name} name={roomInfo.name} numPeople={roomInfo.numPeople}
-                onClick={() => {
-                    ws.current.close();
-                    navigate(`/room/${roomInfo.uri}`);
-                }}/>;
+        return <Room key={roomInfo.name} name={roomInfo.name}
+                numPeople={roomInfo.numPeople} link={`/room/${roomInfo.uri}`}
+                onClick={() => ws.current.close()}/>;
     }
 
     useEffect(() => {

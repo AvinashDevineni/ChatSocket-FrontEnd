@@ -35,3 +35,8 @@ textarea, input[type="text"] {
     background-color: hsl(0, 0%, 25%);
     color: white;
 }
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
