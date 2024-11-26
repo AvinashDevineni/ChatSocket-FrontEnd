@@ -2,14 +2,12 @@ import { useEffect, useRef, useState } from "react";
 
 import RoomCreator from './RoomCreator.jsx';
 import Room from './Room.jsx';
+
 import { API_URL_NO_PROTOCOL } from '../../constants/ApiUrl.js';
 
 import './Rooms.css';
-import { useNavigate } from "react-router-dom";
 
 export default function Rooms() {
-    const navigate = useNavigate();
-
     const [rooms, setRooms] = useState([]);
     const roomNameToInfoDict = useRef({});
 
@@ -19,7 +17,7 @@ export default function Rooms() {
     const ws = useRef();
     
     function makeRoomFromInfo(roomInfo) {
-        return <Room key={roomInfo.name} name={roomInfo.name}
+        return <Room name={roomInfo.name}
                 numPeople={roomInfo.numPeople} link={`/room/${roomInfo.uri}`}
                 onClick={() => ws.current.close()}/>;
     }
@@ -92,7 +90,9 @@ export default function Rooms() {
                 .catch(e => console.log(e));
              }}/>
 
-            <ul id="rooms-list">{rooms}</ul>
+            <ul id="rooms-list">
+                {rooms.map((room, i) => <li key={i} className='room-wrapper'>{room}</li>)}
+            </ul>
         </>
     );
 }

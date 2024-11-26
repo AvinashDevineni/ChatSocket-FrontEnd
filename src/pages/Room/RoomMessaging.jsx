@@ -12,8 +12,10 @@ import './RoomMessaging.css';
 
 export default function RoomMessaging() {
     const { name: roomUri } = useParams();
+
     const [roomName, setRoomName] = useState('Loading...');
     const [messages, setMessages] = useState([]);
+
     const textAreaRef = useRef();
     const ws = useRef();
 
@@ -28,7 +30,10 @@ export default function RoomMessaging() {
         const controller = new AbortController();
         const signal = controller.signal;
         fetch(`http://${API_URL_NO_PROTOCOL}/room/${encodeURI(roomUri)}`, {signal})
-        .then(res => res.json()).then(res => setRoomName(res.name));
+        .then(res => res.json()).then(room => {
+            setRoomName(room.name);
+            setMessages(room.messages.map(msg => JSON.parse(msg)));
+        });
         
         return () => {
             ws.current.removeEventListener('message', updateMessages);
