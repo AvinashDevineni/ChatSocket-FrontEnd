@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import LabeledText from '../../components/LabeledText';
 
 import PeopleIcon from '../../public/people.png';
+import ClockIcon from '../../public/clock.png';
 
 import './Room.css';
 
@@ -17,12 +18,12 @@ export default function Room({ name, numPeople, creationTime, link, onClick }) {
       const ageHrs = ageMins / 60;
       const ageDays = ageHrs / 24;
 
-      if (ageMins >= 1)
-         return `${Math.round(ageMins)} min${Math.round(ageMins) == 1 ? '' : 's'}`;
+      if (ageDays >= 1)
+         return `${ageDays.toFixed(1)} day${ageDays.toFixed(1) == 1 ? '' : 's'}`;
       else if (ageHrs >= 1)
-         return `${Math.round(ageHrs)} hr${Math.round(ageHrs) == 1 ? '' : 's'}`;
-      else if (ageDays >= 1)
-         return `${Math.round(ageHrs)} day${Math.round(ageDays) == 1 ? '' : 's'}`;
+         return `${ageHrs.toFixed(1)} hr${ageHrs.toFixed(1) == 1 ? '' : 's'}`;
+      else if (ageMins >= 1)
+         return `${Math.round(ageMins)} min${Math.round(ageMins) == 1 ? '' : 's'}`;
       else return `${Math.round(ageSecs)} sec${Math.round(ageSecs) == 1 ? '' : 's'}`;
    }
 
@@ -42,8 +43,10 @@ export default function Room({ name, numPeople, creationTime, link, onClick }) {
                onClick(e);
           }}>
             <h1 className='room-name'>{name}</h1>
-            <LabeledText imgSrc={PeopleIcon} imgSize={20} text={numPeople} gap={10}/>
-            <p>{age}</p>
+            <div className='room-info'>
+               <LabeledText imgSrc={PeopleIcon} imgSize={20} text={numPeople} gap={10}/>
+               <LabeledText imgSrc={ClockIcon} imgSize={20} text={age} gap={10}/>
+            </div>
          </Link>
       </>
    );

@@ -1,5 +1,5 @@
 .room {
-    width: 50%;
+    width: max(250px, 50%);
     padding: 5px 10px;
 
     background-color: hsl(0, 0%, 15%);
@@ -24,4 +24,10 @@
 
 .room-name {
     margin-bottom: 20px;
+}
+
+.room-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }

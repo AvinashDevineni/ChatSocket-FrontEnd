@@ -7,7 +7,7 @@ body {
     color: white;
 }
 
-button {
+.button {
     cursor: pointer;
 
     border: none;
@@ -22,18 +22,22 @@ button {
     transition: transform 0.25s;
 }
 
-button:hover {
+.button:hover {
     transform: scale(1.1);
 }
 
 textarea, input[type="text"] {
     resize: none;
 
-    border: none;
+    border: hsl(0, 0%, 60%) solid 2px;
     border-radius: 2px;
 
     background-color: hsl(0, 0%, 25%);
     color: white;
+}
+
+textarea:focus, input[type="text"]:focus {
+    background-color: red;
 }
 
 a {

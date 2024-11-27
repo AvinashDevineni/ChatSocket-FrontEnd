@@ -79,7 +79,7 @@ export default function RoomMessaging() {
 
                 <div id='room-messaging'>
                     <textarea ref={textAreaRef} id="msg-input"/>
-                    <button id="send-msg" onClick={() => {
+                    <button className='button' id="send-msg" onClick={() => {
                         ws.current.send(JSON.stringify({ 
                             from: 'user', message: textAreaRef.current.value
                         }));

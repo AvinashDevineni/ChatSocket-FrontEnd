@@ -15,7 +15,7 @@ export default function RoomCreator({ onRoomCreate }) {
         <>
             <div id='creator-wrapper'>
                 <input type='text' ref={roomNameInputRef} id='room-name-input'/>
-                <button onClick={() => {
+                <button className='button' onClick={() => {
                     invokeIfNotNull(onRoomCreate, roomNameInputRef.current.value);
                  }}>
                     Create Room
